@@ -61,3 +61,36 @@ end
 
 @declare_matmul(AbstractMatrix, AbstractVector)
 @declare_matmul(Diagonal,)
+
+# LinearAlgebra
+
+function LinearAlgebra.lu!(nda::NamedDimsArray{L}, args...; kwargs...) where L
+    inner_lu = lu!(parent(nda), args...; kwargs...)
+    factors = NamedDimsArray{L}(getfield(inner_lu, :factors))
+    ipiv = getfield(inner_lu, :ipiv)
+    info = getfield(inner_lu, :info)
+    return LU(factors, ipiv, info)
+end
+
+function Base.parent(F::LU{T,<:NamedDimsArray{L}}) where {T, L}
+    factors = parent(getfield(F, :factors))
+    ipiv = getfield(F, :ipiv)
+    info = getfield(F, :info)
+    return LU(factors, ipiv, info)
+end
+
+function Base.getproperty(F::LU{T,<:NamedDimsArray{L}}, d::Symbol) where {T, L}
+    inner = getproperty(parent(F), d)
+    if d == :L || d == :U
+        return NamedDimsArray{L}(inner)
+    elseif d == :P
+        perm_matrix_labels = (first(L), first(L))
+        return NamedDimsArray{perm_matrix_labels}(inner)
+    elseif d == :p
+        perm_vector_labels = (first(L),)
+        return NamedDimsArray{perm_vector_labels}(inner)
+    else
+        return inner
+    end
+end
+>>>>>>> introduce lu!
