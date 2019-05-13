@@ -107,6 +107,14 @@ end
 
 ## svd
 
+function LinearAlgebra.svd(nda::NamedDimsArray{L}, args...; kwargs...) where L
+    return svd!(
+        LinearAlgebra.copy_oftype(nda, LinearAlgebra.eigtype(T)),
+        args...;
+        kwargs...
+    )
+end
+
 function LinearAlgebra.svd!(nda::NamedDimsArray{L}, args...; kwargs...) where L
     inner = svd!(parent(nda), args...; kwargs...)
     u = NamedDimsArray{L}(getfield(inner, :U))
