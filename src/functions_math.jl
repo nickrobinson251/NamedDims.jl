@@ -94,7 +94,7 @@ function Base.getproperty(F::LU{T,<:NamedDimsArray{L}}, d::Symbol) where {T, L}
     inner = getproperty(parent(F), d)
     n1, n2 = L
     if d == :L
-        return NamedDimsArray{(n1, :_)}(inner) 
+        return NamedDimsArray{(n1, :_)}(inner)
     elseif d == :U
         return NamedDimsArray{(:_, n2)}(inner)
     elseif d == :P
@@ -107,4 +107,42 @@ function Base.getproperty(F::LU{T,<:NamedDimsArray{L}}, d::Symbol) where {T, L}
         return inner
     end
 end
->>>>>>> introduce lu!
+
+## svd
+
+function LinearAlgebra.svd(nda::NamedDimsArray{L, T}, args...; kwargs...) where {L, T}
+    return svd!(
+        LinearAlgebra.copy_oftype(nda, LinearAlgebra.eigtype(T)),
+        args...;
+        kwargs...
+    )
+end
+
+function LinearAlgebra.svd!(nda::NamedDimsArray{L}, args...; kwargs...) where L
+    inner = svd!(parent(nda), args...; kwargs...)
+    u = NamedDimsArray{L}(getfield(inner, :U))
+    s = getfield(inner, :S)
+    vt = NamedDimsArray{L}(getfield(inner, :Vt))
+    return SVD(u, s, vt)
+end
+
+function Base.parent(F::SVD{T, Tr, <:NamedDimsArray{L}}) where {T, Tr, L}
+    u = parent(getfield(F, :U))
+    s = getfield(F, :S)
+    vt = parent(getfield(F, :Vt))
+    return SVD(u, s, vt)
+end
+
+function Base.getproperty(F::SVD{T, Tr, <:NamedDimsArray{L}}, d::Symbol) where {T, Tr, L}
+    inner = getproperty(parent(F), d)
+    n1, n2 = L
+    if d == :U
+        return NamedDimsArray{(n1,:_)}(inner)
+    elseif d == :V
+        return NamedDimsArray{(:_, n2)}(inner)
+    elseif d == :Vt
+        return NamedDimsArray{(n2,:_)}(inner)
+    else # :S
+        return inner
+    end
+end
