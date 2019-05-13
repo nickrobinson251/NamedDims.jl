@@ -63,6 +63,17 @@ end
 @declare_matmul(Diagonal,)
 
 # LinearAlgebra
+#==
+    Note on implementation of factorisition types:
+    The general strategy is to make one of the fields of the factorization types
+    into a NamedDimsArray.
+    We can then dispatch on this as required, and strip it out with `parent` for accessing operations.
+    However, the type of the field does not actually always match to what it should be
+    from a mathematical perspective.
+    Which is corrected in `Base.getproperty`, as required
+==#
+
+## lu
 
 function LinearAlgebra.lu!(nda::NamedDimsArray{L}, args...; kwargs...) where L
     inner_lu = lu!(parent(nda), args...; kwargs...)

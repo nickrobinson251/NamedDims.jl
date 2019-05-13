@@ -1,6 +1,7 @@
 using LinearAlgebra
 using NamedDims
 using NamedDims: matrix_prod_names, names
+using LinearAlgebra
 using Test
 
 @testset "+" begin
@@ -146,4 +147,13 @@ end
         @test names(x * nda) == (:_, :b)
         @test names(nda * x) == (:a, :_)
     end
+
+# LinearAlgebra
+@testset "lu" begin
+    nda = NamedDimsArray{(:foo, :bar)}([1.0 2; 3 4])
+    x = lu(nda)
+    @test names(x.L) == (:foo, :bar)
+    @test names(x.U) == (:foo, :bar)
+    @test names(x.p) == (:foo,)
+    @test names(x.P) == (:foo, :foo)
 end
