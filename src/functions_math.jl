@@ -94,7 +94,7 @@ function Base.getproperty(F::LU{T,<:NamedDimsArray{L}}, d::Symbol) where {T, L}
     inner = getproperty(parent(F), d)
     n1, n2 = L
     if d == :L
-        return NamedDimsArray{(n1, :_)}(inner) 
+        return NamedDimsArray{(n1, :_)}(inner)
     elseif d == :U
         return NamedDimsArray{(:_, n2)}(inner)
     elseif d == :P

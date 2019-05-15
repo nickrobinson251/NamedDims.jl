@@ -171,4 +171,7 @@ end
     @test names(x.S) == (:_,)
     @test names(x.V) == (:_, :bar)
     @test names(x.Vt) == (:bar, :_)
+
+    # Identity operation should give back original nam,es
+    @test names(x.U * Diagonal(x.S) * x.V) == (:foo, :bar)
 end
