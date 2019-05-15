@@ -147,6 +147,7 @@ end
         @test names(x * nda) == (:_, :b)
         @test names(nda * x) == (:a, :_)
     end
+end
 
 # LinearAlgebra
 @testset "lu" begin
@@ -156,4 +157,13 @@ end
     @test names(x.U) == (:foo, :bar)
     @test names(x.p) == (:foo,)
     @test names(x.P) == (:foo, :foo)
+end
+
+@testset "svd" begin
+    nda = NamedDimsArray{(:foo, :bar)}([1.0 2; 3 4])
+    x = svd(nda)
+    @test names(x.U) == (:foo, :_)
+    @test names(x.S) == (:_,)
+    @test names(x.V) == (:_, :bar)
+    @test names(x.Vt) == (:bar, :_)
 end

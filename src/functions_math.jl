@@ -107,7 +107,7 @@ end
 
 ## svd
 
-function LinearAlgebra.svd(nda::NamedDimsArray{L}, args...; kwargs...) where L
+function LinearAlgebra.svd(nda::NamedDimsArray{L, T}, args...; kwargs...) where {L, T}
     return svd!(
         LinearAlgebra.copy_oftype(nda, LinearAlgebra.eigtype(T)),
         args...;
