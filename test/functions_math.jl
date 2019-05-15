@@ -153,10 +153,15 @@ end
 @testset "lu" begin
     nda = NamedDimsArray{(:foo, :bar)}([1.0 2; 3 4])
     x = lu(nda)
-    @test names(x.L) == (:foo, :bar)
-    @test names(x.U) == (:foo, :bar)
+    @test names(x.L) == (:foo, :_)
+    @test names(x.U) == (:_, :bar)
     @test names(x.p) == (:foo,)
     @test names(x.P) == (:foo, :foo)
+
+    # Idenity opperations should give back original names
+    @test names(x.P * nda) == (:foo, :bar)
+    @test names(x.L * x.U) == (:foo, :bar)
+    @test names(nda[x.p, :]) == (:foo, :bar)
 end
 
 @testset "svd" begin

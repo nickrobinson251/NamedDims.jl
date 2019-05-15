@@ -92,8 +92,11 @@ end
 
 function Base.getproperty(F::LU{T,<:NamedDimsArray{L}}, d::Symbol) where {T, L}
     inner = getproperty(parent(F), d)
-    if d == :L || d == :U
-        return NamedDimsArray{L}(inner)
+    n1, n2 = L
+    if d == :L
+        return NamedDimsArray{(n1, :_)}(inner) 
+    elseif d == :U
+        return NamedDimsArray{(:_, n2)}(inner)
     elseif d == :P
         perm_matrix_labels = (first(L), first(L))
         return NamedDimsArray{perm_matrix_labels}(inner)
