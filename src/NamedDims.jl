@@ -13,6 +13,7 @@ include("broadcasting.jl")
 include("functions.jl")
 include("functions_dims.jl")
 include("functions_math.jl")
+include("functions_linearalgebra.jl")
 
 include("compat.jl")
 end # module

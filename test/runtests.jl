@@ -7,6 +7,7 @@ const testfiles = (
     "functions.jl",
     "functions_dims.jl",
     "functions_math.jl",
+    "functions_linearalgebra.jl",
     "broadcasting.jl",
     "compat.jl",
 )
