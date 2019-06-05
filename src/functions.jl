@@ -2,15 +2,16 @@
 
 ## Helpers:
 
+# if reducing over `:` then results is a scalar
+function nameddimsarray_result(original_nda, reduced_data, reduction_dims::Colon)
+    return reduced_data
+end
+
 function nameddimsarray_result(original_nda, reduced_data, reduction_dims)
     L = names(original_nda)
     return NamedDimsArray{L}(reduced_data)
 end
 
-# if reducing over `:` then results is a scalar
-function nameddimsarray_result(original_nda, reduced_data, reduction_dims::Colon)
-    return reduced_data
-end
 
 
 ###################################################################################
@@ -59,13 +60,12 @@ for (mod, funs) in (
     end
 end
 
-
 ################################################
 # Non-dim Overloads
 
 # 1 Arg
 for (mod, funs) in (
-    (:Base, (:zero, :one, :copy,)),
+    (:Base, (:zero, :one, :copy)),
 )
     for fun in funs
         @eval function $mod.$fun(a::NamedDimsArray{L}) where L
@@ -74,5 +74,3 @@ for (mod, funs) in (
         end
     end
 end
-
-
